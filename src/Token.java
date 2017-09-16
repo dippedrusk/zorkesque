@@ -17,6 +17,10 @@ public class Token {
 		{
 			ret = GameplayToken.tokenizableAsGameplay(s);
 		}
+		if (ret == null)
+		{
+			ret = MotionToken.tokenizableAsMotion(s);
+		}
 		return ret;
 	}
 

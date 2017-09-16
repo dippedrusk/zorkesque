@@ -8,7 +8,7 @@ public class Tokenizer {
 
 	public LinkedList<Token> tokenize(String line) {
 
-		String[] tokens = line.split("\\s+");
+		String[] tokens = line.split("[^a-zA-Z]+");
 
 		LinkedList<Token> gametokens = new LinkedList<Token>();
 

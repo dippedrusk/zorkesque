@@ -1,16 +1,24 @@
 
-public class MotionToken extends GameplayToken {
+public class MotionToken extends Token {
 
   private final MotionType motiontype;
 
 	public MotionToken(MotionType motiontype) {
-    super(GameplayTokenType.MOTION);
+    super(TokenType.MOTION);
 		this.motiontype = motiontype;
 	}
 
-  @Override
   public String getToken() {
     return motiontype.name();
+  }
+
+  public static Token tokenizableAsMotion(String s) {
+    for (MotionType m : MotionType.values()) {
+      if ((m.name()).equals(s)) {
+        return new MotionToken(m);
+      }
+    }
+    return null;
   }
 
 }

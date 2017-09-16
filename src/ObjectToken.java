@@ -13,4 +13,8 @@ public class ObjectToken extends GameplayToken {
     return objecttype.name();
   }
 
+  public ObjectType getObjectType() {
+    return objecttype;
+  }
+
 }

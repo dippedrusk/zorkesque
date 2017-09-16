@@ -6,6 +6,13 @@ public abstract class Object {
   private int currentHealth;
   private boolean status;
 
+  public Object() {
+    this.type = ObjectType.TIGER;
+    this.initialHealth = 65;
+    this.currentHealth = this.initialHealth;
+    this.status = true;
+  }
+
   /*
    * Verbs that can be called on this object (boolean array?) <<<<<<<<<<<<<<<<
    * Health in case of a creature (current and initial)

@@ -12,8 +12,8 @@ public class GameplayToken extends Token {
 		this.GameplayType = gameplaytype;
 	}
 
-  public GameplayTokenType getGameplayTokenType() {
-		return GameplayType;
+  public String getGameplayTokenType() {
+		return GameplayType.name();
 	}
 
   public String getToken() {
@@ -29,11 +29,6 @@ public class GameplayToken extends Token {
     for (VerbType v : VerbType.values()) {
       if ((v.name()).equals(s)) {
         return new VerbToken(v);
-      }
-    }
-    for (MotionType m : MotionType.values()) {
-      if ((m.name()).equals(s)) {
-        return new MotionToken(m);
       }
     }
     return null;

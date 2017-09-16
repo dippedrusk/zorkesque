@@ -13,4 +13,8 @@ public class VerbToken extends GameplayToken {
     return verbtype.name();
   }
 
+  public VerbType getVerbType() {
+    return verbtype;
+  }
+
 }

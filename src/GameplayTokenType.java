@@ -2,7 +2,6 @@
 public enum GameplayTokenType {
 
   OBJECT,
-  VERB,
-  MOTION
-
+  VERB
+  
 }

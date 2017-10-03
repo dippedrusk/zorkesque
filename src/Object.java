@@ -1,23 +1,37 @@
 
-public abstract class Object {
+public class Object {
 
   private final ObjectType type;
   private final int initialHealth;
   private int currentHealth;
   private boolean status;
 
-  public Object() {
-    this.type = ObjectType.TIGER;
-    this.initialHealth = 65;
+  private int id;
+
+  public static int numObjects = 0;
+
+  public Object(ObjectType type) {
+    switch (type) {
+      case TIGER:
+        this.initialHealth = 65;
+        break;
+      case ELEPHANT:
+        this.initialHealth = 75;
+        break;
+      case RABBIT:
+        this.initialHealth = 25;
+        break;
+      default:
+        this.initialHealth = 0;
+        break;
+    }
+    this.type = type;
     this.currentHealth = this.initialHealth;
     this.status = true;
+    this.id = ++numObjects;
   }
 
-  /*
-   * Verbs that can be called on this object (boolean array?) <<<<<<<<<<<<<<<<
-   * Health in case of a creature (current and initial)
-   * Amount of damage dealt by an attack
-   * Status: active-alive / inactive-dead
-   */
-
+  public int getID() {
+    return id;
+  }
 }

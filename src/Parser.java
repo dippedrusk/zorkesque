@@ -60,18 +60,6 @@ public class Parser {
 			if ((curr.getTokenType()).equals("MOTION")) {
 				MotionToken curr_m = (MotionToken) curr;
 				motiontokens.push(curr_m);
-				String direction = "";
-				switch (curr_m.getToken()) {
-					case "N":
-						direction = "North"; break;
-					case "S":
-						direction = "South"; break;
-					case "E":
-						direction = "East"; break;
-					case "W":
-						direction = "West"; break;
-				}
-				System.out.format("Moving %s...%n", direction);
 			}
 		}
 

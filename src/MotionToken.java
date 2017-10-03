@@ -8,8 +8,8 @@ public class MotionToken extends Token {
 		this.motiontype = motiontype;
 	}
 
-  public String getToken() {
-    return motiontype.name();
+  public MotionType getMotionType() {
+    return motiontype;
   }
 
   public static Token tokenizableAsMotion(String s) {

@@ -19,10 +19,6 @@ public class Tokenizer {
 			}
 		}
 
-		if (gametokens.isEmpty()) {
-			System.out.println("Your command could not be understood. Try again.");
-		}
-
 		return gametokens;
 	}
 

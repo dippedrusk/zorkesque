@@ -18,11 +18,14 @@ public enum ObjectType {
       case "creature":
         this.availableGameplays.add(VerbType.KILL);
         this.availableGameplays.add(VerbType.CARESS);
+        break;
       case "inventory":
         this.availableGameplays.add(VerbType.TAKE);
         this.availableGameplays.add(VerbType.DROP);
+        //break;
       case "other":
         this.availableGameplays.add(VerbType.EXAMINE);
+        break;
     }
   }
 

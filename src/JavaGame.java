@@ -47,7 +47,7 @@ public class JavaGame {
 
 			LinkedList<Token> tokens = tokenizer.tokenize(line);
 
-			LinkedList<GameplayToken> gameplaytokens = parser.parseGameplayTokens(tokens);
+			LinkedList<Token> gameplaytokens = parser.parseGameplayTokens(tokens);
 			LinkedList<MotionToken> motiontokens = parser.parseMotionTokens(tokens);
 			LinkedList<OverrideToken> overrides = parser.parseOverrides(tokens); // redesign this?
 

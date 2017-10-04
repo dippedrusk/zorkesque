@@ -1,20 +1,24 @@
 
-public class VerbToken extends GameplayToken {
+public class VerbToken extends Token {
 
   private final VerbType verbtype;
 
 	public VerbToken(VerbType verbtype) {
-    super(GameplayTokenType.VERB);
+    super(TokenType.VERB);
 		this.verbtype = verbtype;
 	}
 
-  @Override
-  public String getToken() {
-    return verbtype.name();
-  }
-
   public VerbType getVerbType() {
     return verbtype;
+  }
+
+  public static Token tokenizableAsVerb(String s) {
+    for (VerbType v : VerbType.values()) {
+      if ((v.name()).equals(s)) {
+        return new VerbToken(v);
+      }
+    }
+    return null;
   }
 
 }

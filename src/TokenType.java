@@ -1,7 +1,8 @@
 
 public enum TokenType {
 
-  GAMEPLAY,
+  VERB,
+  OBJECT,
   MOTION,
   OVERRIDE
 

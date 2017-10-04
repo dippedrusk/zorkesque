@@ -11,7 +11,7 @@ public class Parser {
 		LinkedList<OverrideToken> overrides = new LinkedList<OverrideToken>();
 
 		for (Token curr : gametokens) {
-			if ((curr.getTokenType()).equals("OVERRIDE")) {
+			if (curr.getTokenType() == TokenType.OVERRIDE) {
 				overrides.push((OverrideToken) curr);
 			}
 		}
@@ -19,36 +19,32 @@ public class Parser {
 		return overrides;
 	}
 
-	public LinkedList<GameplayToken> parseGameplayTokens(LinkedList<Token> gametokens) {
+	public LinkedList<Token> parseGameplayTokens(LinkedList<Token> gametokens) {
 
-		LinkedList<GameplayToken> gameplaytokens = new LinkedList<GameplayToken>();
+		LinkedList<Token> gameplaytokens = new LinkedList<Token>();
 
 		VerbToken currverb = null;
 
 		for (Token curr : gametokens) {
-			if ((curr.getTokenType()).equals("GAMEPLAY")) {
-				GameplayToken currg = (GameplayToken) curr;
-				if ((currg.getGameplayTokenType()).equals("VERB")) {
-					currverb = (VerbToken) currg;
-				}
-				else if ((currg.getGameplayTokenType()).equals("OBJECT")) {
-					ObjectToken obj = (ObjectToken) currg;
-					if (currverb != null) {
-						if (validCommand(currverb.getVerbType(), obj.getObjectType())) {
-							gameplaytokens.push(currverb);
-							gameplaytokens.push(currg);
-							currverb = null;
-						}
-						else {
-							System.out.format("You cannot %s a %s!%n", currverb.getToken().toLowerCase(), obj.getToken().toLowerCase());
-						}
+			if (curr.getTokenType() == TokenType.VERB) {
+				currverb = (VerbToken) curr;
+			}
+			else if (curr.getTokenType() == TokenType.OBJECT) {
+				ObjectToken obj = (ObjectToken) curr;
+				if (currverb != null) {
+					if (validCommand(currverb.getVerbType(), obj.getObjectType())) {
+						gameplaytokens.push(currverb);
+						gameplaytokens.push(curr);
+						currverb = null;
+					}
+					else {
+						System.out.format("You cannot %s a %s!%n", currverb.getVerbType().toString(), obj.getObjectType().toString());
 					}
 				}
 			}
 		}
 
 		return gameplaytokens;
-
 	}
 
 	public LinkedList<MotionToken> parseMotionTokens(LinkedList<Token> gametokens) {
@@ -56,7 +52,7 @@ public class Parser {
 		LinkedList<MotionToken> motiontokens = new LinkedList<MotionToken>();
 
 		for (Token curr : gametokens) {
-			if ((curr.getTokenType()).equals("MOTION")) {
+			if (curr.getTokenType() == TokenType.MOTION) {
 				MotionToken curr_m = (MotionToken) curr;
 				motiontokens.push(curr_m);
 			}

@@ -34,4 +34,8 @@ public class Object {
   public int getID() {
     return id;
   }
+
+  public ObjectType getType() {
+    return type;
+  }
 }

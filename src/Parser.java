@@ -37,7 +37,6 @@ public class Parser {
 						if (validCommand(currverb.getVerbType(), obj.getObjectType())) {
 							gameplaytokens.push(currverb);
 							gameplaytokens.push(currg);
-							System.out.format("VALID! (%s %s)%n", currverb.getToken().toLowerCase(), obj.getToken().toLowerCase());
 							currverb = null;
 						}
 						else {

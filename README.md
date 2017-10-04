@@ -20,6 +20,7 @@
 * Some items cannot be carried in your inventory but can still be examined:
   * examine <item>: Examine an uninventoriable item at your current location
 * Top-level game controls are:
+  * inventory: Prints a list of items currently in your inventory
   * save: Saves the current game progress (**not yet implemented**)
   * help: Prints the list of controls and information about your current location
   * quit: Exits the game

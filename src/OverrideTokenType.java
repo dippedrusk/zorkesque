@@ -2,6 +2,8 @@
 public enum OverrideTokenType {
 
   QUIT,
-  SAVE
+  SAVE,
+  HELP,
+  INVENTORY
 
 }

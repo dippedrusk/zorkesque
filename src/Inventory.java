@@ -21,4 +21,17 @@ public class Inventory {
   public boolean isFull() {
     return (objects.size() == MAX_CAPACITY);
   }
+
+  public void printItems() {
+    System.out.println("");
+    if (isEmpty()) {
+      System.out.format("Your inventory is currently empty.%n%n");
+      return;
+    }
+    System.out.println("Your inventory contains:");
+    for (Object obj : objects) {
+      System.out.format("  %s%n", obj.getType().toString());
+    }
+    System.out.println("");
+  }
 }

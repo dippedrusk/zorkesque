@@ -4,10 +4,11 @@ import java.util.LinkedList;
 public class Inventory {
 
   private LinkedList<Object> objects;
-  public static final int MAX_CAPACITY = 5;
+  public final int MAX_CAPACITY;
 
-  public Inventory() {
+  public Inventory(int MAX_CAPACITY) {
     this.objects = new LinkedList<Object>();
+    this.MAX_CAPACITY = MAX_CAPACITY;
   }
 
   public boolean isEmpty() {
@@ -23,7 +24,6 @@ public class Inventory {
   }
 
   public void printItems() {
-    System.out.println("");
     if (isEmpty()) {
       System.out.format("Your inventory is currently empty.%n%n");
       return;
@@ -32,6 +32,5 @@ public class Inventory {
     for (Object obj : objects) {
       System.out.format("  %s%n", obj.getType().toString());
     }
-    System.out.println("");
   }
 }

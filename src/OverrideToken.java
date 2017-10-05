@@ -1,15 +1,15 @@
 
 public class OverrideToken extends Token {
 
-  public final OverrideTokenType overridetokentype;
+  private final OverrideTokenType overridetokentype;
 
 	public OverrideToken(OverrideTokenType overridetokentype) {
     super(TokenType.OVERRIDE);
 		this.overridetokentype = overridetokentype;
 	}
 
-  public String getToken() {
-		return overridetokentype.name();
+  public OverrideTokenType getOverrideType() {
+		return overridetokentype;
 	}
 
   public static Token tokenizableAsOverride(String s) {

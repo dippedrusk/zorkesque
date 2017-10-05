@@ -28,7 +28,7 @@ public class Object {
     this.type = type;
     this.currentHealth = this.initialHealth;
     this.status = true;
-    this.id = ++numObjects;
+    this.id = numObjects++;
   }
 
   public int getID() {

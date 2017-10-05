@@ -1,35 +1,47 @@
 
 import java.io.*;
 import java.util.*;
-//import javax.xml.parsers.*;
 
-public class JavaGame {
+public class Zorkesque {
 
 	private static final int GAMESPACE_LENGTH = 10;
 	private static final int START_XY = 5;
 	private static final int START_HEALTH = 50;
+	private static final int INVENTORY_CAPACITY = 5;
 
-	public int[] locations = new int[GAMESPACE_LENGTH * GAMESPACE_LENGTH];
+	private ArrayList<Object> objects;
+	private Map map;
+
 	private int curr_X;
 	private int curr_Y;
-	private ArrayList<Object> objects = new ArrayList<Object>();
 	private int health;
+
+	public Zorkesque() {
+		this.curr_X = START_XY;
+		this.curr_Y = START_XY;
+		this.health = START_HEALTH;
+
+		this.objects = new ArrayList<Object>();
+		this.map = new Map(GAMESPACE_LENGTH);
+
+		this.addObjects();
+	}
+
+	private void addObjects() {
+		addObject(ObjectType.TIGER, 6, 6);
+		addObject(ObjectType.DAGGER, 4, 5);
+	}
 
 	public static void main(String[] args) {
 
-		JavaGame game = new JavaGame();
+		Zorkesque game = new Zorkesque();
 
 		System.out.format("%nWelcome to Zorkesque.%n");
 		game.printHelpMessage();
 
-		game.curr_X = game.START_XY;
-		game.curr_Y = game.START_XY;
-		game.health = game.START_HEALTH;
-		game.initializeObjects();
-
 		Tokenizer tokenizer = new Tokenizer();
 		Parser parser = new Parser();
-		Inventory inventory = new Inventory();
+		Inventory inventory = new Inventory(INVENTORY_CAPACITY);
 		boolean quit = false;
 		boolean won = false;
 
@@ -49,7 +61,7 @@ public class JavaGame {
 
 			LinkedList<Token> gameplaytokens = parser.parseGameplayTokens(tokens);
 			LinkedList<MotionToken> motiontokens = parser.parseMotionTokens(tokens);
-			LinkedList<OverrideToken> overrides = parser.parseOverrides(tokens); // redesign this?
+			LinkedList<OverrideToken> overrides = parser.parseOverrides(tokens);
 
 			if (tokens.isEmpty() && (gameplaytokens.isEmpty() && motiontokens.isEmpty() && overrides.isEmpty())) {
 				System.out.println("Your command could not be understood. Try again.");
@@ -59,37 +71,37 @@ public class JavaGame {
 			}
 
 			while (!gameplaytokens.isEmpty()) {
-				ObjectToken obj = (ObjectToken) gameplaytokens.pop();
-				VerbToken verb = (VerbToken) gameplaytokens.pop();
+				ObjectToken objtoken = (ObjectToken) gameplaytokens.pop();
+				VerbToken verbtoken = (VerbToken) gameplaytokens.pop();
+				ObjectType objtype = objtoken.getObjectType();
+				VerbType verbtype = verbtoken.getVerbType();
 
-				if (obj.getObjectType() != game.getObjectTypeAtCurrentLocation()) {
-					System.out.format("There is no %s at the current location.%n", obj.getObjectType().toString());
+				Object obj = game.isHere(objtype);
+				if (obj == null) {
+					System.out.format("There is no %s at the current location.%n", objtype.toString());
 				}
-				else if (verb.getVerbType() == VerbType.KILL) {
+				else if (verbtype == VerbType.KILL) {
 					if (inventory.isEmpty()) {
-						System.out.format("You do not have the weapons in your inventory to kill this %s.%n", obj.getObjectType().toString());
+						System.out.format("You do not have the weapons in your inventory to kill this %s.%n", objtype.toString());
 					}
-					else {
-						game.removeObject(game.getObjectAtCurrentLocation());
-						System.out.format("You have slain the %s.%n", obj.getObjectType().toString());
-					}
+					game.removeObject(obj);
+					System.out.format("You have slain the %s.%n", objtype.toString());
 				}
-				else if (verb.getVerbType() == VerbType.TAKE) {
+				else if (verbtype == VerbType.TAKE) {
 					if (inventory.isFull()) {
-						System.out.format("You do not have the space to inventory this %s.", obj.getObjectType().toString());
+						System.out.format("You do not have the space to inventory this %s.", objtype.toString());
 						System.out.println("If you wish, you can drop another item and try again.");
 					}
 					else {
-						inventory.addItem(game.getObjectAtCurrentLocation());
-						game.removeObject(game.getObjectAtCurrentLocation());
-						System.out.format("The %s has been added to your inventory.%n", obj.getObjectType().toString());
+						inventory.addItem(obj);
+						game.removeObject(obj);
+						System.out.format("The %s has been added to your inventory.%n", objtype.toString());
 					}
 				}
 			}
 
 			while (!motiontokens.isEmpty()) {
 				MotionToken curr = motiontokens.pop();
-				String direction = "";
 				switch (curr.getMotionType()) {
 					case N:
 						game.moveNorth(); break;
@@ -100,43 +112,31 @@ public class JavaGame {
 					case W:
 						game.moveWest(); break;
 				}
-				System.out.format("Your new coordinates are (%d, %d).%n", game.curr_X, game.curr_Y);
 				game.printLocationInfo();
 			}
 
 			while (!overrides.isEmpty()) {
 				OverrideToken curr = overrides.pop();
-				if ((curr.getToken()).equals("INVENTORY")) {
-					inventory.printItems();
-				}
-				else if ((curr.getToken()).equals("HELP")) {
-					game.printHelpMessage();
-				}
-				else if ((curr.getToken()).equals("SAVE")) {
-					System.out.println("Saving game state...");
-					// TODO: Implement this
-				}
-				else {	// quit
-					System.out.println("Goodbye!");
-					quit = true;
+				switch (curr.getOverrideType()) {
+					case INVENTORY:
+						inventory.printItems();
+						break;
+					case HELP:
+						game.printHelpMessage();
+						break;
+					case SAVE:
+						System.out.println("Saving game state...");
+						// TODO: Implement this
+						break;
+					case QUIT:
+						quit = true;
+						System.out.println("Goodbye!");
+						break;
 				}
 			}
+
+			System.out.println("");
 		}
-	}
-
-	private void initializeObjects() {
-		for (int location : locations) {
-			location = 0;
-		}
-
-		addObject(ObjectType.TIGER, 6, 6);
-		addObject(ObjectType.DAGGER, 4, 5);
-	}
-
-	private void addObject(ObjectType type, int X, int Y) {
-		Object obj = new Object(type);
-		objects.add(obj);
-		locations[X*GAMESPACE_LENGTH + Y] = obj.getID();
 	}
 
 	private void moveNorth() {
@@ -160,7 +160,7 @@ public class JavaGame {
 	}
 
 	private void printHelpMessage() {
-		System.out.format("%nTo move around in the game, use:%n");
+		System.out.println("To move around in the game, use:");
 		System.out.format("  N: North%n  S: South%n  W: West%n  E: East%n");
 		System.out.println("To interact with creatures in the game, use:");
 		System.out.format("  caress <creature>: Caress a creature");
@@ -170,35 +170,55 @@ public class JavaGame {
 		System.out.format("  drop <item>: Remove an item from your inventory%n");
 		System.out.format("  examine <item>: Examine an item in your inventory or at your current location%n");
 		System.out.println("Some items cannot be carried in your inventory but can still be examined.");
-		System.out.format("  examine <item>: Examine an uninventoriable item at your current location%n%n");
+		System.out.println("  examine <item>: Examine an uninventoriable item at your current location");
 		printLocationInfo();
 	}
 
 	private void printLocationInfo() {
-		int curr_location = curr_X * GAMESPACE_LENGTH + curr_Y;
-		ObjectType obj = getObjectTypeAtCurrentLocation();
-		if (obj != null) {
-			System.out.println("There's something here.");
-			System.out.format("It is a %s.%n", obj.toString());
+		LinkedList<Object> objects = getObjectsAtCurrentLocation();
+		if (objects.isEmpty()) {
+			return;
+		}
+		if (objects.size() == 1) {
+			System.out.format("There is a %s here.%n", objects.peek().getType().toString());
+		}
+		else {
+			System.out.println("Here, there are:");
+			for (Object o : objects) {
+				System.out.format("  %s%n", o.getType().toString());
+			}
 		}
 	}
 
-	private ObjectType getObjectTypeAtCurrentLocation() {
-		Object obj = getObjectAtCurrentLocation();
-		return (obj == null) ? null : obj.getType();
+	private LinkedList<Object> getObjectsAtCurrentLocation() {
+		LinkedList<Integer> ids = map.getObjectsAtLocation(curr_X, curr_Y);
+		LinkedList<Object> ret = new LinkedList<Object>();
+		for (int i = 0; i < ids.size(); i++) {
+			int id = ids.get(i);
+			ret.add(objects.get(id));
+		}
+		return ret;
 	}
 
-	private Object getObjectAtCurrentLocation() {
-		int curr_location = curr_X * GAMESPACE_LENGTH + curr_Y;
-		if (locations[curr_location] != 0) {
-			return objects.get(locations[curr_location] - 1);
+	private Object isHere(ObjectType type) {
+		LinkedList<Object> objects = getObjectsAtCurrentLocation();
+		for (Object o : objects) {
+			if (o.getType() == type) {
+				return o;
+			}
 		}
 		return null;
 	}
 
+	private void addObject(ObjectType type, int X, int Y) {
+		Object obj = new Object(type);
+		int id = obj.getID();
+		objects.add(obj);
+		map.addObject(obj, X, Y);
+	}
+
 	private void removeObject(Object obj) {
-		int curr_location = curr_X * GAMESPACE_LENGTH + curr_Y;
-		objects.remove(locations[curr_location] - 1);
-		locations[curr_location] = 0;
+		objects.remove(obj);
+		map.removeObject(obj, curr_X, curr_Y);
 	}
 }

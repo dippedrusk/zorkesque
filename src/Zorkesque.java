@@ -9,27 +9,14 @@ public class Zorkesque {
 	private static final int START_HEALTH = 50;
 	private static final int INVENTORY_CAPACITY = 5;
 
-	private ArrayList<Object> objects;
 	private Map map;
 
-	private int curr_X;
-	private int curr_Y;
 	private int health;
 
 	public Zorkesque() {
-		this.curr_X = START_XY;
-		this.curr_Y = START_XY;
 		this.health = START_HEALTH;
-
-		this.objects = new ArrayList<Object>();
-		this.map = new Map(GAMESPACE_LENGTH);
-
+		this.map = new Map(GAMESPACE_LENGTH, START_XY, START_XY);
 		this.addObjects();
-	}
-
-	private void addObjects() {
-		addObject(ObjectType.TIGER, 6, 6);
-		addObject(ObjectType.DAGGER, 4, 5);
 	}
 
 	public static void main(String[] args) {
@@ -38,6 +25,7 @@ public class Zorkesque {
 
 		System.out.format("%nWelcome to Zorkesque.%n");
 		game.printHelpMessage();
+		System.out.println();
 
 		Tokenizer tokenizer = new Tokenizer();
 		Parser parser = new Parser();
@@ -76,25 +64,43 @@ public class Zorkesque {
 				ObjectType objtype = objtoken.getObjectType();
 				VerbType verbtype = verbtoken.getVerbType();
 
-				Object obj = game.isHere(objtype);
-				if (obj == null) {
+				Object obj = game.map.isHere(objtype);
+				if (verbtype == VerbType.DROP) {
+					if (inventory.isEmpty()) {
+						System.out.format("Your inventory is empty. You have no %s to drop.%n", objtype.toString());
+					}
+					else {
+						Object todrop = inventory.containsItem(objtype);
+						if (todrop == null) {
+							System.out.format("There is no %s in your inventory.%n", objtype.toString());
+						}
+						else {
+							inventory.removeItem(todrop);
+							game.map.addObject(todrop);
+							System.out.format("The %s has been dropped from your inventory.%n", objtype.toString());
+						}
+					}
+				}
+				else if (obj == null) {
 					System.out.format("There is no %s at the current location.%n", objtype.toString());
 				}
 				else if (verbtype == VerbType.KILL) {
 					if (inventory.isEmpty()) {
 						System.out.format("You do not have the weapons in your inventory to kill this %s.%n", objtype.toString());
 					}
-					game.removeObject(obj);
-					System.out.format("You have slain the %s.%n", objtype.toString());
+					else {
+						game.map.removeObject(obj);
+						System.out.format("You have slain the %s.%n", objtype.toString());
+					}
 				}
 				else if (verbtype == VerbType.TAKE) {
 					if (inventory.isFull()) {
-						System.out.format("You do not have the space to inventory this %s.", objtype.toString());
+						System.out.format("You do not have the space to inventory this %s.%n", objtype.toString());
 						System.out.println("If you wish, you can drop another item and try again.");
 					}
 					else {
 						inventory.addItem(obj);
-						game.removeObject(obj);
+						game.map.removeObject(obj);
 						System.out.format("The %s has been added to your inventory.%n", objtype.toString());
 					}
 				}
@@ -102,22 +108,16 @@ public class Zorkesque {
 
 			while (!motiontokens.isEmpty()) {
 				MotionToken curr = motiontokens.pop();
-				switch (curr.getMotionType()) {
-					case N:
-						game.moveNorth(); break;
-					case S:
-						game.moveSouth(); break;
-					case E:
-						game.moveEast(); break;
-					case W:
-						game.moveWest(); break;
-				}
-				game.printLocationInfo();
+				game.map.updateCurrentLocation(curr.getMotionType());
+				game.map.printLocationDescription();
 			}
 
 			while (!overrides.isEmpty()) {
 				OverrideToken curr = overrides.pop();
 				switch (curr.getOverrideType()) {
+					case LOOK:
+						game.map.printLocationDescription();
+						break;
 					case INVENTORY:
 						inventory.printItems();
 						break;
@@ -134,29 +134,8 @@ public class Zorkesque {
 						break;
 				}
 			}
-
-			System.out.println("");
+			System.out.println();
 		}
-	}
-
-	private void moveNorth() {
-		curr_Y = (curr_Y + 1) % GAMESPACE_LENGTH;
-		System.out.println("Moving North...");
-	}
-
-	private void moveSouth() {
-		curr_Y = (curr_Y - 1 + GAMESPACE_LENGTH) % GAMESPACE_LENGTH;
-		System.out.println("Moving South...");
-	}
-
-	private void moveEast() {
-		curr_X = (curr_X + 1) % GAMESPACE_LENGTH;
-		System.out.println("Moving East...");
-	}
-
-	private void moveWest() {
-		curr_X = (curr_X - 1 + GAMESPACE_LENGTH) % GAMESPACE_LENGTH;
-		System.out.println("Moving West...");
 	}
 
 	private void printHelpMessage() {
@@ -171,54 +150,10 @@ public class Zorkesque {
 		System.out.format("  examine <item>: Examine an item in your inventory or at your current location%n");
 		System.out.println("Some items cannot be carried in your inventory but can still be examined.");
 		System.out.println("  examine <item>: Examine an uninventoriable item at your current location");
-		printLocationInfo();
 	}
 
-	private void printLocationInfo() {
-		LinkedList<Object> objects = getObjectsAtCurrentLocation();
-		if (objects.isEmpty()) {
-			return;
-		}
-		if (objects.size() == 1) {
-			System.out.format("There is a %s here.%n", objects.peek().getType().toString());
-		}
-		else {
-			System.out.println("Here, there are:");
-			for (Object o : objects) {
-				System.out.format("  %s%n", o.getType().toString());
-			}
-		}
-	}
-
-	private LinkedList<Object> getObjectsAtCurrentLocation() {
-		LinkedList<Integer> ids = map.getObjectsAtLocation(curr_X, curr_Y);
-		LinkedList<Object> ret = new LinkedList<Object>();
-		for (int i = 0; i < ids.size(); i++) {
-			int id = ids.get(i);
-			ret.add(objects.get(id));
-		}
-		return ret;
-	}
-
-	private Object isHere(ObjectType type) {
-		LinkedList<Object> objects = getObjectsAtCurrentLocation();
-		for (Object o : objects) {
-			if (o.getType() == type) {
-				return o;
-			}
-		}
-		return null;
-	}
-
-	private void addObject(ObjectType type, int X, int Y) {
-		Object obj = new Object(type);
-		int id = obj.getID();
-		objects.add(obj);
-		map.addObject(obj, X, Y);
-	}
-
-	private void removeObject(Object obj) {
-		objects.remove(obj);
-		map.removeObject(obj, curr_X, curr_Y);
+	private void addObjects() {
+		map.addObjectAtCoordinates(new Object(ObjectType.TIGER), 6, 6);
+		map.addObjectAtCoordinates(new Object(ObjectType.DAGGER), 4, 5);
 	}
 }

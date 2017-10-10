@@ -15,17 +15,30 @@ public class Inventory {
     return objects.isEmpty();
   }
 
-  public void addItem(Object obj) {
-    objects.add(obj);
-  }
-
   public boolean isFull() {
     return (objects.size() == MAX_CAPACITY);
   }
 
+  public void addItem(Object obj) {
+    objects.add(obj);
+  }
+
+  public void removeItem(Object obj) {
+    objects.remove(obj);
+  }
+
+  public Object containsItem(ObjectType type) {
+    for (Object obj : objects) {
+      if (obj.getType() == type) {
+        return obj;
+      }
+    }
+    return null;
+  }
+
   public void printItems() {
     if (isEmpty()) {
-      System.out.format("Your inventory is currently empty.%n%n");
+      System.out.println("Your inventory is currently empty.");
       return;
     }
     System.out.println("Your inventory contains:");

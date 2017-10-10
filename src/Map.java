@@ -18,20 +18,24 @@ public class Map {
     this.GAMESPACE_LENGTH = GAMESPACE_LENGTH;
 		this.curr_X = START_X;
 		this.curr_Y = START_Y;
+		addStartingObjects();
+	}
+
+	private void addStartingObjects() {
+		addObjectAtCoordinates(new Object(ObjectType.TIGER), 6, 6);
+		addObjectAtCoordinates(new Object(ObjectType.DAGGER), 4, 5);
 	}
 
   public void addObjectAtCoordinates(Object obj, int X, int Y) {
 		int location = X * GAMESPACE_LENGTH + Y;
-		int id = obj.getID();
 		objects.add(obj);
-		(locations.get(location)).add(id);
+		(locations.get(location)).add(obj.getID());
 	}
 
 	public void addObject(Object obj) {
 		int current_location = curr_X * GAMESPACE_LENGTH + curr_Y;
-		int id = obj.getID();
-		objects.add(obj);
-		(locations.get(current_location)).add(id);
+		(objects.get(obj.getID())).activateObject();
+		(locations.get(current_location)).add(obj.getID());
 	}
 
   public LinkedList<Object> getObjectsAtCurrentLocation() {
@@ -47,21 +51,41 @@ public class Map {
 
   public void removeObject(Object obj) {
 		int current_location = curr_X * GAMESPACE_LENGTH + curr_Y;
-    (locations.get(current_location)).removeFirstOccurrence(obj.getID());
-		objects.remove(obj);
+		(objects.get(obj.getID())).deactivateObject();
+		if (!obj.isCreature()) {
+			(locations.get(current_location)).removeFirstOccurrence(obj.getID());
+		}
   }
 
   public void printLocationDescription() {
     System.out.println("You are surrounded by thick tropical vegetation.");
 		LinkedList<Object> objects = getObjectsAtCurrentLocation();
-		if (objects.isEmpty()) {
-			return;
+		boolean deadobject = false;
+
+		for (Object o : objects) { // to orient the player, dead bodies don't disappear
+			if (!o.isActive()) {
+				System.out.format("Here lies a dead %s.%n", o.getType().toString());
+				objects.remove(o);
+				deadobject = true;
+			}
 		}
-		else if (objects.size() == 1) {
-			System.out.format("There is a %s here.%n", objects.peek().getType().toString());
+
+		if (objects.size() == 1) {
+			if (deadobject) {
+				System.out.format("There is also a ");
+			}
+			else {
+				System.out.format("Here, there is a ");
+			}
+			System.out.format("%s.%n", (objects.pop()).getType().toString());
 		}
-		else {
-			System.out.println("Here, there are:");
+		if (objects.size() > 1) {
+			if (deadobject) {
+				System.out.format("There are also:");
+			}
+			else {
+				System.out.format("Here, there are:");
+			}
 			for (Object o : objects) {
 				System.out.format("  %s%n", o.getType().toString());
 			}
@@ -92,7 +116,7 @@ public class Map {
 	public Object isHere(ObjectType type) {
 		LinkedList<Object> objects = getObjectsAtCurrentLocation();
 		for (Object o : objects) {
-			if (o.getType() == type) {
+			if ((o.getType() == type) && (o.isActive())) {
 				return o;
 			}
 		}

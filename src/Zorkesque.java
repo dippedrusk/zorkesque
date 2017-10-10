@@ -8,16 +8,7 @@ public class Zorkesque {
 	private static final int START_XY = 5;
 	private static final int START_HEALTH = 50;
 	private static final int INVENTORY_CAPACITY = 5;
-
-	private Map map;
-
-	private int health;
-
-	public Zorkesque() {
-		this.health = START_HEALTH;
-		this.map = new Map(GAMESPACE_LENGTH, START_XY, START_XY);
-		this.addObjects();
-	}
+	private int health = START_HEALTH;
 
 	public static void main(String[] args) {
 
@@ -30,6 +21,7 @@ public class Zorkesque {
 		Tokenizer tokenizer = new Tokenizer();
 		Parser parser = new Parser();
 		Inventory inventory = new Inventory(INVENTORY_CAPACITY);
+		Map map = new Map(GAMESPACE_LENGTH, START_XY, START_XY);
 		boolean quit = false;
 		boolean won = false;
 
@@ -64,7 +56,7 @@ public class Zorkesque {
 				ObjectType objtype = objtoken.getObjectType();
 				VerbType verbtype = verbtoken.getVerbType();
 
-				Object obj = game.map.isHere(objtype);
+				Object obj = map.isHere(objtype);
 				if (verbtype == VerbType.DROP) {
 					if (inventory.isEmpty()) {
 						System.out.format("Your inventory is empty. You have no %s to drop.%n", objtype.toString());
@@ -76,20 +68,20 @@ public class Zorkesque {
 						}
 						else {
 							inventory.removeItem(todrop);
-							game.map.addObject(todrop);
+							map.addObject(todrop);
 							System.out.format("The %s has been dropped from your inventory.%n", objtype.toString());
 						}
 					}
 				}
 				else if (obj == null) {
-					System.out.format("There is no %s at the current location.%n", objtype.toString());
+					System.out.format("There is no %s to %s at the current location.%n", objtype.toString(), verbtype.toString());
 				}
 				else if (verbtype == VerbType.KILL) {
 					if (inventory.isEmpty()) {
 						System.out.format("You do not have the weapons in your inventory to kill this %s.%n", objtype.toString());
 					}
 					else {
-						game.map.removeObject(obj);
+						map.removeObject(obj);
 						System.out.format("You have slain the %s.%n", objtype.toString());
 					}
 				}
@@ -100,7 +92,7 @@ public class Zorkesque {
 					}
 					else {
 						inventory.addItem(obj);
-						game.map.removeObject(obj);
+						map.removeObject(obj);
 						System.out.format("The %s has been added to your inventory.%n", objtype.toString());
 					}
 				}
@@ -108,15 +100,15 @@ public class Zorkesque {
 
 			while (!motiontokens.isEmpty()) {
 				MotionToken curr = motiontokens.pop();
-				game.map.updateCurrentLocation(curr.getMotionType());
-				game.map.printLocationDescription();
+				map.updateCurrentLocation(curr.getMotionType());
+				map.printLocationDescription();
 			}
 
 			while (!overrides.isEmpty()) {
 				OverrideToken curr = overrides.pop();
 				switch (curr.getOverrideType()) {
 					case LOOK:
-						game.map.printLocationDescription();
+						map.printLocationDescription();
 						break;
 					case INVENTORY:
 						inventory.printItems();
@@ -150,10 +142,5 @@ public class Zorkesque {
 		System.out.format("  examine <item>: Examine an item in your inventory or at your current location%n");
 		System.out.println("Some items cannot be carried in your inventory but can still be examined.");
 		System.out.println("  examine <item>: Examine an uninventoriable item at your current location");
-	}
-
-	private void addObjects() {
-		map.addObjectAtCoordinates(new Object(ObjectType.TIGER), 6, 6);
-		map.addObjectAtCoordinates(new Object(ObjectType.DAGGER), 4, 5);
 	}
 }

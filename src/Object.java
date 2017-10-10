@@ -4,7 +4,7 @@ public class Object {
   private final ObjectType type;
   private final int initialHealth;
   private int currentHealth;
-  private boolean status;
+  private boolean active;
 
   private int id;
 
@@ -27,7 +27,7 @@ public class Object {
     }
     this.type = type;
     this.currentHealth = this.initialHealth;
-    this.status = true;
+    this.active = true;
     this.id = numObjects++;
   }
 
@@ -37,5 +37,26 @@ public class Object {
 
   public ObjectType getType() {
     return type;
+  }
+
+  public void deactivateObject() {
+    this.active = false;
+  }
+
+  public void activateObject() {
+    this.active = true;
+  }
+
+  public boolean isCreature() {
+    if ((this.type == ObjectType.TIGER) ||
+    (this.type == ObjectType.ELEPHANT) ||
+    (this.type == ObjectType.RABBIT)) {
+      return true;
+    }
+    return false;
+  }
+
+  public boolean isActive() {
+    return active;
   }
 }

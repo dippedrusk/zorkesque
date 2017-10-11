@@ -6,6 +6,8 @@ public enum ObjectType {
   TIGER         ("creature"),
   ELEPHANT      ("creature"),
   RABBIT        ("creature"),
+  BANANA        ("food"),
+  MANGO         ("food"),
   SWORD         ("inventory"),
   FLAMETHROWER  ("inventory"),
   DAGGER        ("inventory"),
@@ -17,7 +19,8 @@ public enum ObjectType {
     switch (subtype) {
       case "creature":
         this.availableGameplays.add(VerbType.KILL);
-        this.availableGameplays.add(VerbType.CARESS);
+      case "food":
+        this.availableGameplays.add(VerbType.EAT);
         break;
       case "inventory":
         this.availableGameplays.add(VerbType.TAKE);

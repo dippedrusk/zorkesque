@@ -21,6 +21,10 @@ public class Object {
       case RABBIT:
         this.initialHealth = 25;
         break;
+      case MANGO:
+      case BANANA:
+        this.initialHealth = 20;
+        break;
       default:
         this.initialHealth = 0;
         break;
@@ -33,6 +37,10 @@ public class Object {
 
   public int getID() {
     return id;
+  }
+
+  public int getHealth() {
+    return currentHealth;
   }
 
   public ObjectType getType() {

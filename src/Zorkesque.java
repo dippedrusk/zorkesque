@@ -79,7 +79,10 @@ public class Zorkesque {
 					System.out.format("There is no %s to %s at the current location.%n", objtype.toString(), verbtype.toString());
 				}
 				else if (verbtype == VerbType.KILL) {
-					if (inventory.isEmpty()) {
+					if (obj.isCreature() && !obj.isActive()) {
+						System.out.println("Why must you torture this poor dead animal so?");
+					}
+					else if (inventory.isEmpty()) {
 						System.out.format("You do not have the weapons in your inventory to kill this %s.%n", objtype.toString());
 					}
 					else {
@@ -96,6 +99,17 @@ public class Zorkesque {
 						inventory.addItem(obj);
 						map.removeObject(obj);
 						System.out.format("The %s has been added to your inventory.%n", objtype.toString());
+					}
+				}
+				else if (verbtype == VerbType.EAT) {
+					if (obj.isCreature() && obj.isActive()) {
+						System.out.format("You cannot eat a live %s.%n", objtype.toString());
+						System.out.println("Try killing it first.");
+					}
+					else {
+						health += obj.getHealth();
+						map.removeObject(obj);
+						System.out.format("Your energy is replenished by the %s you ate.%n", objtype.toString());
 					}
 				}
 			}
@@ -120,6 +134,9 @@ public class Zorkesque {
 						break;
 					case INVENTORY:
 						inventory.printItems();
+						break;
+					case HEALTH:
+						System.out.format("Your health is %d.%n", health);
 						break;
 					case HELP:
 						game.printHelpMessage();

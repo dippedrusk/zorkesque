@@ -24,6 +24,7 @@ public class Map {
 	private void addStartingObjects() {
 		addObjectAtCoordinates(new Object(ObjectType.TIGER), 6, 6);
 		addObjectAtCoordinates(new Object(ObjectType.DAGGER), 4, 5);
+		addObjectAtCoordinates(new Object(ObjectType.BANANA), 5, 6);
 	}
 
   public void addObjectAtCoordinates(Object obj, int X, int Y) {
@@ -117,7 +118,7 @@ public class Map {
 	public Object isHere(ObjectType type) {
 		LinkedList<Object> objects = getObjectsAtCurrentLocation();
 		for (Object o : objects) {
-			if ((o.getType() == type) && (o.isActive())) {
+			if (o.getType() == type) {
 				return o;
 			}
 		}

@@ -33,7 +33,7 @@ public class HumourToken extends Token {
         switch (option) {
           case 0:
             System.out.println("Such language in a high-class establishment like this!");
-            fbreak;
+            break;
           case 1:
             System.out.println("Do you kiss your mother with that mouth?");
             break;
@@ -46,7 +46,7 @@ public class HumourToken extends Token {
         }
         break;
       case HI:
-      case HELLO:s
+      case HELLO:
         System.out.println("Hello there.");
     }
   }

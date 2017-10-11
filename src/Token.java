@@ -13,17 +13,17 @@ public class Token {
 
 	public static Token tokenizable (String s) {
 		Token ret = OverrideToken.tokenizableAsOverride(s);
-		if (ret == null)
-		{
+		if (ret == null) {
 			ret = ObjectToken.tokenizableAsObject(s);
 		}
-		if (ret == null)
-		{
+		if (ret == null) {
 			ret = VerbToken.tokenizableAsVerb(s);
 		}
-		if (ret == null)
-		{
+		if (ret == null) {
 			ret = MotionToken.tokenizableAsMotion(s);
+		}
+		if (ret == null) {
+			ret = HumourToken.tokenizableAsHumour(s);
 		}
 		return ret;
 	}

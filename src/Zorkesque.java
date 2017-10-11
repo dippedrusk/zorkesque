@@ -8,15 +8,10 @@ public class Zorkesque {
 	private static final int START_XY = 5;
 	private static final int START_HEALTH = 50;
 	private static final int INVENTORY_CAPACITY = 5;
-	private int health = START_HEALTH;
 
 	public static void main(String[] args) {
 
 		Zorkesque game = new Zorkesque();
-
-		System.out.format("%nWelcome to Zorkesque.%n");
-		game.printHelpMessage();
-		System.out.println();
 
 		Tokenizer tokenizer = new Tokenizer();
 		Parser parser = new Parser();
@@ -24,12 +19,21 @@ public class Zorkesque {
 		Map map = new Map(GAMESPACE_LENGTH, START_XY, START_XY);
 		boolean quit = false;
 		boolean won = false;
+		int health = START_HEALTH;
+
+		System.out.format("%nWelcome to Zorkesque.%n");
+		game.printHelpMessage();
+		map.printLocationDescription();
+		System.out.println();
 
 		while(!quit) {
+			if (health < 10) {
+				System.out.println("You are low on health. Find food immediately!");
+			}
+
 			System.out.print("> ");
 			BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
 			String line = null;
-
 			try {
 				line = input.readLine();
 			}
@@ -39,15 +43,13 @@ public class Zorkesque {
 
 			LinkedList<Token> tokens = tokenizer.tokenize(line);
 
+			parser.parseHumour(tokens);
 			LinkedList<Token> gameplaytokens = parser.parseGameplayTokens(tokens);
 			LinkedList<MotionToken> motiontokens = parser.parseMotionTokens(tokens);
 			LinkedList<OverrideToken> overrides = parser.parseOverrides(tokens);
 
 			if (tokens.isEmpty() && (gameplaytokens.isEmpty() && motiontokens.isEmpty() && overrides.isEmpty())) {
-				System.out.println("Your command could not be understood. Try again.");
-			}
-			else if (!tokens.isEmpty() && (gameplaytokens.isEmpty() && motiontokens.isEmpty() && overrides.isEmpty())) {
-				System.out.println("Your command is incomplete. Try again.");
+				System.out.println("I beg your pardon?");
 			}
 
 			while (!gameplaytokens.isEmpty()) {
@@ -101,7 +103,13 @@ public class Zorkesque {
 			while (!motiontokens.isEmpty()) {
 				MotionToken curr = motiontokens.pop();
 				map.updateCurrentLocation(curr.getMotionType());
-				map.printLocationDescription();
+				health--;
+			}
+
+			if (map.hasHealer()) {
+				System.out.println("A wild spirit emerges from the ground in front of you.");
+				System.out.println("It heals you and then disappears into thin air.");
+				health = 100;
 			}
 
 			while (!overrides.isEmpty()) {
@@ -116,17 +124,20 @@ public class Zorkesque {
 					case HELP:
 						game.printHelpMessage();
 						break;
-					case SAVE:
-						System.out.println("Saving game state...");
-						// TODO: Implement this
-						break;
 					case QUIT:
 						quit = true;
 						System.out.println("Goodbye!");
 						break;
 				}
 			}
+
 			System.out.println();
+			if (health == 0) {
+				System.out.println("Having exhausted all your energy exploring, you are now dead.");
+				System.out.println("Better luck next time.");
+				System.out.println();
+				quit = true;
+			}
 		}
 	}
 

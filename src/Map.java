@@ -111,6 +111,7 @@ public class Map {
 				System.out.println("Moving West...");
 				break;
 		}
+		printLocationDescription();
   }
 
 	public Object isHere(ObjectType type) {
@@ -121,5 +122,12 @@ public class Map {
 			}
 		}
 		return null;
+	}
+
+	public boolean hasHealer() {
+		if ((curr_X == 5) && (curr_Y == 0)) {
+			return true;
+		}
+		return false;
 	}
 }

@@ -6,6 +6,14 @@ public class Parser {
 	public Parser() {
 	}
 
+	public void parseHumour(LinkedList<Token> gametokens) {
+		for (Token curr : gametokens) {
+			if (curr.getTokenType() == TokenType.HUMOUR) {
+				((HumourToken) curr).respondToHumour();
+			}
+		}
+	}
+
 	public LinkedList<OverrideToken> parseOverrides(LinkedList<Token> gametokens) {
 
 		LinkedList<OverrideToken> overrides = new LinkedList<OverrideToken>();

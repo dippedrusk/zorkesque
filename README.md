@@ -22,10 +22,9 @@
 * Top-level game controls are:
   * look: Prints information about your current location
   * inventory: Prints a list of items currently in your inventory
-  * save: Saves the current game progress (**not yet implemented**)
   * help: Prints the list of game controls
   * quit: Exits the game
-  
+
 ## Learning Log
 * Read the Oracle [Java tutorials](https://docs.oracle.com/javase/tutorial/java/index.html) to learn Java
 * Implemented a simple recursive-descent parser - the only way to interact with the game

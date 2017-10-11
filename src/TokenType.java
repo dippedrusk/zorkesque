@@ -4,7 +4,8 @@ public enum TokenType {
   VERB,
   OBJECT,
   MOTION,
-  OVERRIDE
+  OVERRIDE,
+  HUMOUR
 
   /*
   NEGATION,

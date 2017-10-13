@@ -1,7 +1,7 @@
 
 import java.util.LinkedList;
 
-public enum ObjectType {
+public enum ZorkesqueObjectType {
 
   TIGER         ("creature"),
   ELEPHANT      ("creature"),
@@ -15,7 +15,7 @@ public enum ObjectType {
 
   public final LinkedList<VerbType> availableGameplays = new LinkedList<VerbType>();
 
-  ObjectType(String subtype) {
+  ZorkesqueObjectType(String subtype) {
     switch (subtype) {
       case "creature":
         this.availableGameplays.add(VerbType.KILL);

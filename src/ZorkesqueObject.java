@@ -1,7 +1,7 @@
 
-public class Object {
+public class ZorkesqueObject {
 
-  private final ObjectType type;
+  private final ZorkesqueObjectType type;
   private final int initialHealth;
   private int currentHealth;
   private boolean active;
@@ -10,7 +10,7 @@ public class Object {
 
   public static int numObjects = 0;
 
-  public Object(ObjectType type) {
+  public ZorkesqueObject(ZorkesqueObjectType type) {
     switch (type) {
       case TIGER:
         this.initialHealth = 65;
@@ -43,7 +43,7 @@ public class Object {
     return currentHealth;
   }
 
-  public ObjectType getType() {
+  public ZorkesqueObjectType getType() {
     return type;
   }
 
@@ -56,9 +56,9 @@ public class Object {
   }
 
   public boolean isCreature() {
-    if ((this.type == ObjectType.TIGER) ||
-    (this.type == ObjectType.ELEPHANT) ||
-    (this.type == ObjectType.RABBIT)) {
+    if ((this.type == ZorkesqueObjectType.TIGER) ||
+    (this.type == ZorkesqueObjectType.ELEPHANT) ||
+    (this.type == ZorkesqueObjectType.RABBIT)) {
       return true;
     }
     return false;

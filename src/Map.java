@@ -4,7 +4,7 @@ import java.util.*;
 public class Map {
 
 	private ArrayList<LinkedList<Integer>> locations = new ArrayList<LinkedList<Integer>>();;
-	private ArrayList<Object> objects = new ArrayList<Object>();
+	private ArrayList<ZorkesqueObject> objects = new ArrayList<ZorkesqueObject>();
 
   private final int GAMESPACE_LENGTH;
 	private int curr_X;
@@ -22,27 +22,27 @@ public class Map {
 	}
 
 	private void addStartingObjects() {
-		addObjectAtCoordinates(new Object(ObjectType.TIGER), 6, 6);
-		addObjectAtCoordinates(new Object(ObjectType.DAGGER), 4, 5);
-		addObjectAtCoordinates(new Object(ObjectType.BANANA), 5, 6);
+		addObjectAtCoordinates(new ZorkesqueObject(ZorkesqueObjectType.TIGER), 6, 6);
+		addObjectAtCoordinates(new ZorkesqueObject(ZorkesqueObjectType.DAGGER), 4, 5);
+		addObjectAtCoordinates(new ZorkesqueObject(ZorkesqueObjectType.BANANA), 5, 6);
 	}
 
-  public void addObjectAtCoordinates(Object obj, int X, int Y) {
+  public void addObjectAtCoordinates(ZorkesqueObject obj, int X, int Y) {
 		int location = X * GAMESPACE_LENGTH + Y;
 		objects.add(obj);
 		(locations.get(location)).add(obj.getID());
 	}
 
-	public void addObject(Object obj) {
+	public void addObject(ZorkesqueObject obj) {
 		int current_location = curr_X * GAMESPACE_LENGTH + curr_Y;
 		(objects.get(obj.getID())).activateObject();
 		(locations.get(current_location)).add(obj.getID());
 	}
 
-  public LinkedList<Object> getObjectsAtCurrentLocation() {
+  public LinkedList<ZorkesqueObject> getObjectsAtCurrentLocation() {
 		int current_location = curr_X * GAMESPACE_LENGTH + curr_Y;
 		LinkedList<Integer> ids = locations.get(current_location);
-		LinkedList<Object> ret = new LinkedList<Object>();
+		LinkedList<ZorkesqueObject> ret = new LinkedList<ZorkesqueObject>();
 		for (int i = 0; i < ids.size(); i++) {
 			int id = ids.get(i);
 			ret.add(objects.get(id));
@@ -50,7 +50,7 @@ public class Map {
 		return ret;
 	}
 
-  public void removeObject(Object obj) {
+  public void removeObject(ZorkesqueObject obj) {
 		int current_location = curr_X * GAMESPACE_LENGTH + curr_Y;
 		(objects.get(obj.getID())).deactivateObject();
 		if (!obj.isCreature()) {
@@ -60,10 +60,10 @@ public class Map {
 
   public void printLocationDescription() {
     System.out.println("You are surrounded by thick tropical vegetation.");
-		LinkedList<Object> objects = getObjectsAtCurrentLocation();
+		LinkedList<ZorkesqueObject> objects = getObjectsAtCurrentLocation();
 		boolean deadobject = false;
 
-		for (Object o : objects) { // to orient the player, dead bodies don't disappear
+		for (ZorkesqueObject o : objects) { // to orient the player, dead bodies don't disappear
 			if (!o.isActive()) {
 				System.out.format("Here lies a dead %s.%n", o.getType().toString());
 				objects.remove(o);
@@ -87,7 +87,7 @@ public class Map {
 			else {
 				System.out.format("Here, there are:");
 			}
-			for (Object o : objects) {
+			for (ZorkesqueObject o : objects) {
 				System.out.format("  %s%n", o.getType().toString());
 			}
 		}
@@ -115,9 +115,9 @@ public class Map {
 		printLocationDescription();
   }
 
-	public Object isHere(ObjectType type) {
-		LinkedList<Object> objects = getObjectsAtCurrentLocation();
-		for (Object o : objects) {
+	public ZorkesqueObject isHere(ZorkesqueObjectType type) {
+		LinkedList<ZorkesqueObject> objects = getObjectsAtCurrentLocation();
+		for (ZorkesqueObject o : objects) {
 			if (o.getType() == type) {
 				return o;
 			}

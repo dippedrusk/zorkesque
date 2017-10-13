@@ -55,16 +55,16 @@ public class Zorkesque {
 			while (!gameplaytokens.isEmpty()) {
 				ObjectToken objtoken = (ObjectToken) gameplaytokens.pop();
 				VerbToken verbtoken = (VerbToken) gameplaytokens.pop();
-				ObjectType objtype = objtoken.getObjectType();
+				ZorkesqueObjectType objtype = objtoken.getObjectType();
 				VerbType verbtype = verbtoken.getVerbType();
 
-				Object obj = map.isHere(objtype);
+				ZorkesqueObject obj = map.isHere(objtype);
 				if (verbtype == VerbType.DROP) {
 					if (inventory.isEmpty()) {
 						System.out.format("Your inventory is empty. You have no %s to drop.%n", objtype.toString());
 					}
 					else {
-						Object todrop = inventory.containsItem(objtype);
+						ZorkesqueObject todrop = inventory.containsItem(objtype);
 						if (todrop == null) {
 							System.out.format("There is no %s in your inventory.%n", objtype.toString());
 						}

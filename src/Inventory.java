@@ -3,11 +3,11 @@ import java.util.LinkedList;
 
 public class Inventory {
 
-  private LinkedList<Object> objects;
+  private LinkedList<ZorkesqueObject> objects;
   public final int MAX_CAPACITY;
 
   public Inventory(int MAX_CAPACITY) {
-    this.objects = new LinkedList<Object>();
+    this.objects = new LinkedList<ZorkesqueObject>();
     this.MAX_CAPACITY = MAX_CAPACITY;
   }
 
@@ -19,16 +19,16 @@ public class Inventory {
     return (objects.size() == MAX_CAPACITY);
   }
 
-  public void addItem(Object obj) {
+  public void addItem(ZorkesqueObject obj) {
     objects.add(obj);
   }
 
-  public void removeItem(Object obj) {
+  public void removeItem(ZorkesqueObject obj) {
     objects.remove(obj);
   }
 
-  public Object containsItem(ObjectType type) {
-    for (Object obj : objects) {
+  public ZorkesqueObject containsItem(ZorkesqueObjectType type) {
+    for (ZorkesqueObject obj : objects) {
       if (obj.getType() == type) {
         return obj;
       }
@@ -42,7 +42,7 @@ public class Inventory {
       return;
     }
     System.out.println("Your inventory contains:");
-    for (Object obj : objects) {
+    for (ZorkesqueObject obj : objects) {
       System.out.format("  %s%n", obj.getType().toString());
     }
   }

@@ -45,9 +45,6 @@ public class Parser {
 						gameplaytokens.push(curr);
 						currverb = null;
 					}
-					else {
-						System.out.format("You cannot %s a %s!%n", currverb.getVerbType().toString(), obj.getObjectType().toString());
-					}
 				}
 			}
 		}
@@ -69,12 +66,18 @@ public class Parser {
 		return motiontokens;
 	}
 
-	boolean validCommand(VerbType verb, ObjectType obj) {
-    for (VerbType v : obj.availableGameplays) {
+	boolean validCommand(VerbType verb, ZorkesqueObjectType type) {
+    for (VerbType v : type.availableGameplays) {
       if (v == verb) {
         return true;
       }
     }
+		System.out.format("You cannot %s a %s!%n", verb.toString(), type.toString());
+		System.out.println("You can only do the following:");
+		for (VerbType v : type.availableGameplays) {
+			System.out.format("  %s", v.toString());
+    }
+		System.out.println();
     return false;
   }
 

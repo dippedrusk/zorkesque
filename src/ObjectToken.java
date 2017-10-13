@@ -1,19 +1,19 @@
 
 public class ObjectToken extends Token {
 
-  private final ObjectType objecttype;
+  private final ZorkesqueObjectType objecttype;
 
-	public ObjectToken(ObjectType objecttype) {
+	public ObjectToken(ZorkesqueObjectType objecttype) {
     super(TokenType.OBJECT);
 		this.objecttype = objecttype;
 	}
 
-  public ObjectType getObjectType() {
+  public ZorkesqueObjectType getObjectType() {
     return objecttype;
   }
 
   public static Token tokenizableAsObject(String s) {
-    for (ObjectType o : ObjectType.values()) {
+    for (ZorkesqueObjectType o : ZorkesqueObjectType.values()) {
       if ((o.name()).equals(s)) {
         return new ObjectToken(o);
       }

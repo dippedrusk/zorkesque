@@ -22,9 +22,13 @@ public class Map {
 	}
 
 	private void addStartingObjects() {
+		Random rand = new Random();
+    int healer_X = rand.nextInt(GAMESPACE_LENGTH);
+		int healer_Y = rand.nextInt(GAMESPACE_LENGTH);
 		addObjectAtCoordinates(new ZorkesqueObject(ZorkesqueObjectType.TIGER), 6, 6);
 		addObjectAtCoordinates(new ZorkesqueObject(ZorkesqueObjectType.DAGGER), 4, 5);
 		addObjectAtCoordinates(new ZorkesqueObject(ZorkesqueObjectType.BANANA), 5, 6);
+		addObjectAtCoordinates(new ZorkesqueObject(ZorkesqueObjectType.HEALER), healer_X, healer_Y);
 	}
 
   public void addObjectAtCoordinates(ZorkesqueObject obj, int X, int Y) {
@@ -64,6 +68,9 @@ public class Map {
 		boolean deadobject = false;
 
 		for (ZorkesqueObject o : objects) { // to orient the player, dead bodies don't disappear
+			if (o.getType() == ZorkesqueObjectType.HEALER) {
+				objects.remove(o);
+			}
 			if (!o.isActive()) {
 				System.out.format("Here lies a dead %s.%n", o.getType().toString());
 				objects.remove(o);
@@ -123,12 +130,5 @@ public class Map {
 			}
 		}
 		return null;
-	}
-
-	public boolean hasHealer() {
-		if ((curr_X == 5) && (curr_Y == 0)) {
-			return true;
-		}
-		return false;
 	}
 }

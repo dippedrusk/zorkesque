@@ -73,11 +73,13 @@ public class Parser {
       }
     }
 		System.out.format("You cannot %s a %s!%n", verb.toString(), type.toString());
-		System.out.println("You can only do the following:");
-		for (VerbType v : type.availableGameplays) {
-			System.out.format("  %s", v.toString());
-    }
-		System.out.println();
+		if (type != ZorkesqueObjectType.HEALER) {
+			System.out.println("You can only do the following:");
+			for (VerbType v : type.availableGameplays) {
+				System.out.format("  %s", v.toString());
+	    }
+			System.out.println();
+		}
     return false;
   }
 

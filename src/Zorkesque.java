@@ -23,12 +23,20 @@ public class Zorkesque {
 
 		System.out.format("%nWelcome to Zorkesque.%n");
 		game.printHelpMessage();
+		System.out.println();
 		map.printLocationDescription();
 		System.out.println();
 
 		while(!quit) {
 			if (health < 10) {
 				System.out.println("You are low on health. Find food immediately!");
+			}
+
+			ZorkesqueObject healer = map.isHere(ZorkesqueObjectType.HEALER);
+			if (healer != null) {
+				System.out.println("A wild spirit emerges from the ground in front of you.");
+				System.out.println("It heals you and then disappears into thin air.");
+				health = 100;
 			}
 
 			System.out.print("> ");
@@ -112,18 +120,15 @@ public class Zorkesque {
 						System.out.format("Your energy is replenished by the %s you ate.%n", objtype.toString());
 					}
 				}
+				else if (verbtype == VerbType.EXAMINE) {
+					obj.printObjectDescription();
+				}
 			}
 
 			while (!motiontokens.isEmpty()) {
 				MotionToken curr = motiontokens.pop();
 				map.updateCurrentLocation(curr.getMotionType());
 				health--;
-			}
-
-			if (map.hasHealer()) {
-				System.out.println("A wild spirit emerges from the ground in front of you.");
-				System.out.println("It heals you and then disappears into thin air.");
-				health = 100;
 			}
 
 			while (!overrides.isEmpty()) {
@@ -148,6 +153,10 @@ public class Zorkesque {
 				}
 			}
 
+			if (healer != null) {
+				map.removeObject(healer);
+			}
+
 			System.out.println();
 			if (health == 0) {
 				System.out.println("Having exhausted all your energy exploring, you are now dead.");
@@ -159,16 +168,16 @@ public class Zorkesque {
 	}
 
 	private void printHelpMessage() {
-		System.out.println("To move around in the game, use:");
-		System.out.format("  N: North%n  S: South%n  W: West%n  E: East%n");
-		System.out.println("To interact with creatures in the game, use:");
-		System.out.format("  caress <creature>: Caress a creature");
-		System.out.format("  kill <creature>: Kill the creature if you have a weapon in your inventory%n");
-		System.out.println("Inventoriable items like weapons can be carried and dropped:");
-		System.out.format("  take <item>: Put an item in your inventory%n");
-		System.out.format("  drop <item>: Remove an item from your inventory%n");
-		System.out.format("  examine <item>: Examine an item in your inventory or at your current location%n");
-		System.out.println("Some items cannot be carried in your inventory but can still be examined.");
-		System.out.println("  examine <item>: Examine an uninventoriable item at your current location");
+		System.out.format("  N: Move North%n  S: Move South%n");
+		System.out.format("  W: Move West%n  E: Move East%n");
+		System.out.println("  kill (object): Kill creature if you have a weapon in your inventory");
+		System.out.println("  eat (object): Eat food or a dead creature");
+		System.out.println("  take (object): Add something to your inventory");
+		System.out.println("  drop object: Remove something from your inventory");
+		System.out.println("  examine object: Examine something at your location");
+		System.out.println("  look: See what is around you");
+		System.out.println("  inventory: Get a list of what is in your inventory");
+		System.out.println("  quit: Exit Zorkesque");
+		System.out.println("  help: Print this message");
 	}
 }
